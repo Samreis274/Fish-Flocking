@@ -7,15 +7,15 @@ public class Flock : MonoBehaviour
 
     //Pega o flockinmanager e coloca em uma variavel
     public FlockinManager mymanager;
-    //variavel speed
+    //Variavel speed
     float speed;
-    //cria uma booleana com valor de false
+    //Cria uma booleana com valor de false
     bool turning = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        //pegas as velocidade do Flockinmanager e coloca na variavel speed
+        //Pegas as velocidade do Flockinmanager e coloca na variavel speed
         speed = Random.Range(mymanager.minSpeed, mymanager.maxSpeed);    
     }
 
@@ -24,28 +24,41 @@ public class Flock : MonoBehaviour
     {
         //Cria um bounds para limitar aonde eles podem nadar
         Bounds b = new Bounds(mymanager.transform.position, mymanager.swinLimits * 2);
-        //limita onde o eles vao poder nadar
+
+        //Cria um raycast
+        RaycastHit hit = new RaycastHit();
+        //Novo vector de rotacao
+        Vector3 direction = mymanager.transform.position - transform.position;
+
+        //Limita onde o eles vao poder nadar
         if(!b.Contains(transform.position))
         {
-            //muda booleana para true
+            //Muda booleana para true
             turning = true;
+            direction = mymanager.transform.position - transform.position;
+        }
+        //Condicao caso o raycast colida com o pilar
+        else if(Physics.Raycast(transform.position, this.transform.forward * 50, out hit))
+        {
+            //Muda booleana para true
+            turning = true;
+            //vector para refletir a posicao do peixes
+            direction = Vector3.Reflect(this.transform.forward, hit.normal);
         }
         else
-        {
+            //Muda booleana para false
             turning = false;
-        }
 
+        
         if (turning)
         {
-            //novo vector de rotacao
-            Vector3 direction = mymanager.transform.position - transform.position;
-            transform.rotation = Quaternion.Slerp(transform.rotation, 
+                transform.rotation = Quaternion.Slerp(transform.rotation, 
                 Quaternion.LookRotation(direction), 
                 mymanager.rotationSpeed * Time.deltaTime);
         }
         else
         {
-            //verifica o random range é menor que 10
+            //Verifica o random range é menor que 10
             if(Random.Range(0,100) < 10)
             {
                 speed = Random.Range(mymanager.minSpeed, mymanager.maxSpeed);
@@ -59,7 +72,7 @@ public class Flock : MonoBehaviour
         }
        
         //coloca movimentação no peixe no eixo z
-        transform.Translate(0, 0, Time.deltaTime * speed); 
+        transform.Translate(0, 0, Time.deltaTime * speed);  
 
     }
 

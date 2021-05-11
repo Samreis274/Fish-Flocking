@@ -53,7 +53,11 @@ public class FlockinManager : MonoBehaviour
     }
 
     void Update()
-    {   
+    {
+        //pega minha posicao
+        goalPos = this.transform.position;
+        //cria uma condicao com random
+        if(Random.Range(0,100)<10)
         //posicionamento dos peixes 
         goalPos = this.transform.position + new Vector3(Random.Range(-swinLimits.x, swinLimits.x),
                                                                 Random.Range(-swinLimits.y, swinLimits.y),
